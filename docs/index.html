@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"/>
+	<title>Piers Front Page</title>
+	<link rel="icon" type="image/jpeg" href="https://www.cyberpiers.com/img/Cyberpiers_20241024.jpg"/>
+	<script>
+	// {{{
+	window.APP=(()=>{
+		let app={
+			Head:{},
+			Tail:{},
+			Bar:{},
+			Tab:{}
+		};
+		document.onload=async ()=>{
+			let root=Piers.DOM(document.body);
+
+			app.Head=((R)=>{
+				let H=new Piers.Widget.Form(R),
+					S=new Piers.Session.MSHome();
+				if (!R.PiersClickHandler) R.addEventListener("click",R.PiersClickHandler=function(evt){
+					let act;
+					try { act=evt.target.getAttribute("act"); } catch(x) { }
+					switch(act) {
+					case "login": case "logout":
+						APP.Tab.open("Login");
+						break;
+					}
+				});
+				return {
+					updateUserProfile: (pf)=>{
+						document.body.setAttribute("__mm__",pf.A ? "y" : "n");
+						app.Head.UserProfile = pf;
+						H.set(Object.assign({
+							"_U" : pf.A ? {"L":"登出","A":"logout"} : {"L":"登入","A":"login"},
+							"N" : pf.A || "Guest"
+						},pf))
+					},
+					request: async (url,body)=>{
+						url=Piers.URL(url);
+						if (true || app.Head.UserProfile) (function (profile) {
+							if (!(profile&&profile.SK)) return;
+							profile = profile.SK.split(":");
+							profile.push(btoa(
+								(new Date().getTime()%3600000)
+								.toString(16).match(/../g)
+								.reduce((r,x)=>r+String.fromCodePoint(parseInt(x,16)),"")
+							));
+							profile.push(Piers.Session.SHA_b64(profile.join(":")));
+							profile.splice(2,1);
+							url.addHeader("Piers-Session",profile.join(":"));
+						})(app.Head.UserProfile);
+
+						if (body) url.setBody(body);
+						return await url.request();
+					}
+				};
+			})(root.select('[WidgetTag="THead"]'));
+
+			app.Tail=((R)=>{
+				let T=new Piers.Widget.Form(R);
+				return {
+				};
+			})(root.select('[WidgetTag="TTail"]'));
+
+			app.Bar=((R)=>{
+				const TAG_FUNC="func",
+					  CSA_ACTIVE="Active";
+				let B=new Piers.Widget.Form(R);
+				Piers.DOM(R).bind(function(e){
+					let key=e.getAttribute(TAG_FUNC);
+					if (key) app.Tab.open(key);
+					app.Bar.toggle("fold");
+				});
+				return {
+					load: (ba)=>B.set({Fs:ba}),
+					markActive: (tag)=>Piers.DOM(R).forEach((e)=>{
+						console.log(tag);
+						if (e.getAttribute(TAG_FUNC)===tag)
+							e.setAttribute(CSA_ACTIVE, "yes");
+						else
+							e.removeAttribute(CSA_ACTIVE);
+					},'['+TAG_FUNC+']'),
+					toggle: (mode)=>{
+						let cbm=document.body.querySelector("[CBMode]");
+						if(!mode) mode=cbm.getAttribute("CBMode")==="fold"?"expand":"fold";
+						cbm.setAttribute("CBMode", mode);
+					}
+				};
+			})(root.select('[WidgetTag="TBar"]'));
+
+			app.Bar.load(Piers.DOM(document.body.querySelector('[WidgetTag="PsTab"]')).reduce(function(r,e){
+				return r.push({
+					"L":e.getAttribute("_PsTabLabel"),
+					"A":e.getAttribute("PsTab")
+				}) && r;
+			},'[_PsTabLabel]',[]));
+
+			app.Tab=((R)=>{
+				let T=new Piers.Widget.SlidingTabs(R, {Method:"horizontal"});
+				return {
+					open: (tn) => {
+						app.Bar.markActive(tn);
+						T.set(tn)
+					}
+				};
+			})(root.select('[WidgetTag="PsTab"]'));
+			document.body.querySelector('[func="'+(Piers.Env.Args.O.SP||"SmartBudget")+'"]').click();
+			document.body.style.opacity=1;
+		};
+		return app;
+	})();
+	// }}}
+	</script>
+	<link rel="stylesheet" href="https://www.cyberpiers.com/piers/style.css"/>
+	<script src="http://g3c.cyberpiers.com:4780/piers/init.js"
+			PierEntrance="document.onload"
+			PierXMods="Widget,Session"></script>
+	<style type="text/css">
+		button {
+			margin:2px 4px;
+			padding:2px 8px;
+			font-size:100%;
+			border-radius:8px;
+			background:blue;
+			color:yellow;
+		}
+		button:hover {
+			cursor:pointer;
+			background:white;
+			color:blue;
+		}
+		[Fold="y"] .ToFold { display:none; }
+		[WidgetTag="THead"] { 
+			border:solid darkgreen; border-width:0 0 2px 0;
+			background:#f8fcff; color:darkblue;
+		}
+		[WidgetTag="TTail"] {
+			border:solid darkgreen; border-width:2px 0 0 0;
+			background:darkgreen; color:yellow;
+			font-size:72%;
+		}
+		[WidgetTag="TBar"] {
+			width:100%; height:100%; overflow:auto;
+			background:#F8FFF0; color:darkgreen;
+		}
+		[__mm__="y"] .GuestBlock { display:none; }
+		[__mm__="n"] .MemberBlock { display:none; }
+		[TBar="Fs:List"]>div{
+			margin:8px 0px;
+		}
+		[TBar] button[Active] {
+			background:white;
+			color:black;
+			border-color:white;
+		}
+		[CBMode] {
+			display:flex; flex-flow:row nowrap;
+			position:relative; width:100%; height:100%;
+			justify-content:space-between;
+			align-content:space-between;
+			align-items:center;
+			overflow:hidden;
+		}
+		[CBMode]>.L {
+			flex:0 0 auto;
+			position:relative; width:auto; height:100%;
+			overflow:hidden;
+		}
+		[CBMode]>.V {
+			flex:1 1 auto;
+			position:relative; width:auto; height:100%;
+			overflow:auto;
+		}
+		@media only screen and (orientation: portrait) {
+			[CBMode="fold"]>.L {
+				display:none;
+			}
+			[CBMode]>.V {
+				flex:0 0 auto;
+				width:100%;
+			}
+		}
+	</style>
+</head>
+<body style="opacity:0" __mm__="n">
+<div PsL="VBar">
+	<div PsL="HBar" class="L" WidgetTag="THead" style="padding:3px;margin:5px auto 0;">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tbody style="color:#555555;font-size:4vmin;">
+				<tr>
+					<td style='background:url("https://www.cyberpiers.com/img/Cyberpiers_20241024.jpg") no-repeat left/contain; width:12vmin; height:8vmin;' onclick="APP.Bar.toggle();"></td>
+					<td style="text-align:left;vertical-align:top">
+            			<div style="font-weight:700;">
+							雲埠
+						</div>
+            			<div style="font-size:70%;font-weight:300;">
+							Cyberpiers
+						</div>
+					</td>
+					<td style="text-align:right;vertical-align:top;padding-right:8px;">
+						<div style="font-size:70%">
+							您好,
+						</div>
+            			<div style="font-weight:800;">
+							<span style="color:blue;" THead="N:text;_U.A:attribute:act" act="login">Guest</span>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+    </div>
+	<div CBMode="expand" style="background:white;">
+		<div class="L" WidgetTag="TBar" style="border:solid darkgreen;border-width:0 2px 0 0;padding:2px 12px;max-width:100%;">
+			<div TBar="Fs:List">
+				<div><button TBar="A:attribute:func;L:text;" style="width:100%;padding:8px 2px 8px 2px;"></button></div>
+			</div>
+		</div>
+		<div class="V">
+			<div WidgetTag="PsTab" style="position:absolute;width:100%;height:100%;left;0;top:0;">
+				<div PsTab="Login" _PsTab="tab/Login"></div>
+				<div PsTab="Timeline" _PsTab="tab/Timeline" _PsTabLabel="夢想時光機"></div>
+				<div PsTab="SmartBudget" _PsTab="tab/SmartBudget" _PsTabLabel="透明錢包"></div>
+				<div PsTab="Regression" _PsTab="tab/Regression" _PsTabLabel="回歸示範"></div>
+				<div PsTab="SpeechSynthesis" _PsTab="tab/SpeechSynthesis" _PsTabLabel="語音合成示範"></div>
+				<div PsTab="ChartSample" _PsTab="tab/ChartSample" _PsTabLabel="繪圖示範"></div>
+			</div>
+		</div>
+	</div>
+	<div WidgetTag="TTail" class="L PageTail" style="font-size:10pt;font-weight:200;text-align:right;">
+		<div style="padding:1px 8px 1px 8px">若有相關問題，請洽 +886-917-181525</div>
+	</div>
+</body>
+</html>

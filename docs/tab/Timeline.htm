@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"/>
+</head>
+<body>
+	<div>
+		<style>
+			[WidgetTag="IPT"] { margin: 8px; padding: 6px; border: 2px solid silver; }
+			[WidgetTag="IPT"]>div { display:flex; flex-flow:row nowrap; }
+			[WidgetTag="IPT"] input { border: 0 solid silver; border-width: 0 0 2px 0;}
+
+			[ForCAT] { display:none}
+			[activeCAT="JOB"] [ForCAT="JOB"],
+			[activeCAT="DEBT"] [ForCAT="DEBT"],
+			[activeCAT="INVEST"] [ForCAT="INVEST"] { display:inline; }:
+
+			[ForTASK] { display:none}
+		</style>
+		<div>致理夢工廠</div>
+
+		<div style="text-align:center;">
+			<table UIE="Config" border="1" style="border:0;margin:1%;width:98%;">
+				<tbody activeCAT="JOB"><tr>
+					<td colspan="3"><div>
+						<select onchange="Piers.DOM(this).find('tbody').setAttribute('activeCAT',this.value)">
+							<option value="JOB">工作</option>
+							<option value="DEBT">負債</option>
+							<option value="INVEST">投資</option>
+						</select>
+						<select ForCAT="JOB">
+							<option value="JOB_H">理專(高中)</option>
+							<option value="JOB_U">分析師(大學)</option>
+							<option value="JOB_F">Food Panda 送貨員</option>
+						</select>
+						<select ForCAT="DEBT">
+							<option value="DEBT_CREDIT">信用貸款</option>
+							<option value="DEBT_LOAN">貸款</option>
+							<option value="DEBT_DELAY">分期付款</option>
+						</select>
+						<select ForCAT="INVEST">
+							<option value="INVEST_STOCK">股票</option>
+							<option value="INVEST_FUND">基金</option>
+							<option value="INVEST_LOTTERY">樂透彩</option>
+						</select>
+					</div></td>
+				</tr><tr>
+					<td colspan="3" WidgetTag="IPT">
+						<div ForTASK="JOB_H">
+							<h1>理專(高中)</h1>
+							<div>Name:<input type="text" style="flex:1 1 auto;" IPT="N:Value"/></div>
+							<div>
+								<select IPT="O.T:Value"></select>
+								<input type="number" min="0" step="0.01" style="flex:1 1 auto;" IPT="O.A:Value"/>
+							</div>
+						</div>
+						<div ForTASK="JOB_U">
+							<h1>分析師(大學)</h1>
+						</div>
+						<div ForTASK="JOB_F">
+							<h1>Food Panda 送貨員</h1>
+							<div>條件: 機車</div>
+						</div>
+					</td>
+				</tr></tbody>
+				<tbody><tr>
+					<td colspan="3" align="center">
+						<span style="float:right">
+							<button>&larr;</button>
+							<input type="month"/>
+							<button>&rarr;</button>
+						</span>
+						<span style="margin:0 8px;">
+							<button>&uarr;</button>
+							<button>&darr;</button>
+						</span>
+					</td>
+				</tr></tbody>
+				<tbody><tr WidgetTag="Rs">
+					<td Rs="N:text"></td>
+					<td Rs="C:text"></td>
+					<td func="RemoveRule">❌</td>
+				</tr></tbody>
+				<tbody><tr>
+					<td colspan="3" align="center">
+						<button func="Play">&#9654;</button>
+						<button func="Stop">&#9632;</button>
+					</td>
+				</tr></tbody>
+			</table>
+		</div>
+
+		<div UIE="List">
+			<table border="1" cellspacing="6" cellpadding="6" width="98%" align="center">
+				<thead><tr>
+					<th>年月</th>
+					<th>資金</th>
+					<th>資產</th>
+				</tr></thead>
+				<tbody WidgetTag="item"><tr>
+					<td item="T:text"></td>
+					<td item="V:text"></td>
+					<td item="P:text"></td>
+				</tr></tbody>
+			</table>
+		</div>
+	</div>
+</body>
+</html>

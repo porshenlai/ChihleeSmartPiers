@@ -15,7 +15,8 @@
 			Tab:{}
 		};
 		document.onload=async ()=>{
-			let root=Piers.DOM(document.body);
+			let root=Piers.DOM(document.body),
+				Pref=await Piers.URL("pref.json").request();
 
 			app.Head=((R)=>{
 				let H=new Piers.Widget.Form(R),
@@ -91,15 +92,24 @@
 				};
 			})(root.select('[WidgetTag="TBar"]'));
 
-			app.Bar.load(Piers.DOM(document.body.querySelector('[WidgetTag="PsTab"]')).reduce(function(r,e){
-				return r.push({
-					"L":e.getAttribute("_PsTabLabel"),
-					"A":e.getAttribute("PsTab")
-				}) && r;
-			},'[_PsTabLabel]',[]));
+			app.Bar.load(
+				Piers.OBJ(Pref.Pages).reduce((r,v,k)=>{
+					if(v.L) r.push({"A":k,"L":v.L});
+					return r;
+				},[])
+			);
 
 			app.Tab=((R)=>{
-				let T=new Piers.Widget.SlidingTabs(R, {Method:"horizontal"});
+				let T = new Piers.Widget.SlidingTabs(
+					Piers.OBJ(Pref.Pages).reduce((r,v,k)=>{
+						Piers.DOM({
+							"T":"DIV",
+							"A":{"_PsTab":v.F, "PsTab":k}
+						}).join(r);
+						return r;
+					},Piers.DOM(R).clear().E),
+					{Method:"horizontal"}
+				);
 				return {
 					open: (tn) => {
 						app.Bar.markActive(tn);
@@ -219,14 +229,7 @@
 			</div>
 		</div>
 		<div class="V">
-			<div WidgetTag="PsTab" style="position:absolute;width:100%;height:100%;left;0;top:0;">
-				<div PsTab="Login" _PsTab="tab/Login"></div>
-				<div PsTab="Timeline" _PsTab="tab/Timeline" _PsTabLabel="夢想時光機"></div>
-				<div PsTab="SmartBudget" _PsTab="tab/SmartBudget" _PsTabLabel="透明錢包"></div>
-				<div PsTab="Regression" _PsTab="tab/Regression" _PsTabLabel="回歸示範"></div>
-				<div PsTab="SpeechSynthesis" _PsTab="tab/SpeechSynthesis" _PsTabLabel="語音合成示範"></div>
-				<div PsTab="ChartSample" _PsTab="tab/ChartSample" _PsTabLabel="繪圖示範"></div>
-			</div>
+			<div WidgetTag="PsTab" style="position:absolute;width:100%;height:100%;left;0;top:0;"></div>
 		</div>
 	</div>
 	<div WidgetTag="TTail" class="L PageTail" style="font-size:10pt;font-weight:200;text-align:right;">

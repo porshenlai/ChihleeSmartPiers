@@ -1,0 +1,7 @@
+{
+	"Pages":{
+		"Login":{"F":"tab/Login"},
+		"Timeline":{"F":"tab/Timeline","L":"夢想時光機"},
+		"SmartBudget":{"F":"tab/SmartBudget","L":"透明錢包"}
+	}
+}

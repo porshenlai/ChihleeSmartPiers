@@ -78,7 +78,6 @@
 				return {
 					load: (ba)=>B.set({Fs:ba}),
 					markActive: (tag)=>Piers.DOM(R).forEach((e)=>{
-						console.log(tag);
 						if (e.getAttribute(TAG_FUNC)===tag)
 							e.setAttribute(CSA_ACTIVE, "yes");
 						else

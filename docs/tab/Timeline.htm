@@ -11,56 +11,90 @@
 			[WidgetTag="IPT"]>div { display:flex; flex-flow:row nowrap; }
 			[WidgetTag="IPT"] input { border: 0 solid silver; border-width: 0 0 2px 0;}
 
-			[ForCAT] { display:none}
-			[activeCAT="JOB"] [ForCAT="JOB"],
-			[activeCAT="DEBT"] [ForCAT="DEBT"],
-			[activeCAT="INVEST"] [ForCAT="INVEST"] { display:inline; }:
-
-			[ForTASK] { display:none}
+			[SWITCH="OFF"] { display:none }	
+			div[filter] { margin:8px 2px 16px 2px;padding:4px;border:1px solid silver; }
 		</style>
 		<div>致理夢工廠</div>
 
 		<div style="text-align:center;">
 			<table UIE="Config" border="1" style="border:0;margin:1%;width:98%;">
-				<tbody activeCAT="JOB"><tr>
-					<td colspan="3"><div>
-						<select onchange="Piers.DOM(this).find('tbody').setAttribute('activeCAT',this.value)">
-							<option value="JOB">工作</option>
-							<option value="DEBT">負債</option>
-							<option value="INVEST">投資</option>
-						</select>
-						<select ForCAT="JOB">
-							<option value="JOB_H">理專(高中)</option>
-							<option value="JOB_U">分析師(大學)</option>
-							<option value="JOB_F">Food Panda 送貨員</option>
-						</select>
-						<select ForCAT="DEBT">
-							<option value="DEBT_CREDIT">信用貸款</option>
-							<option value="DEBT_LOAN">貸款</option>
-							<option value="DEBT_DELAY">分期付款</option>
-						</select>
-						<select ForCAT="INVEST">
-							<option value="INVEST_STOCK">股票</option>
-							<option value="INVEST_FUND">基金</option>
-							<option value="INVEST_LOTTERY">樂透彩</option>
-						</select>
-					</div></td>
-				</tr><tr>
-					<td colspan="3" WidgetTag="IPT">
-						<div ForTASK="JOB_H">
-							<h1>理專(高中)</h1>
-							<div>Name:<input type="text" style="flex:1 1 auto;" IPT="N:Value"/></div>
-							<div>
-								<select IPT="O.T:Value"></select>
-								<input type="number" min="0" step="0.01" style="flex:1 1 auto;" IPT="O.A:Value"/>
+				<tbody><tr>
+					<td colspan="3" align="left">
+						<div WidgetTag="filter" value="" style="margin:1px 1px 24px 1px;">
+							<div style="background:lightblue;padding:4px;">
+								<select filter="">
+									<option value="JOB">工作</option>
+									<option value="DEBT">負債</option>
+									<option value="INVEST">投資</option>
+								</select>
+								<select filter="JOB">
+									<option value="-">-</option>
+									<option value="H">理財專員</option>
+									<option value="U">分析師</option>
+									<option value="D">Food Panda 送貨員</option>
+								</select>
+								<select filter="DEBT">
+									<option value="-">-</option>
+									<option value="PAYMENT">生活費</option>
+									<option value="STUDY">讀大學</option>
+									<option value="MOTORCYCLE">買機車</option>
+									<option value="LOAN">貸款</option>
+								</select>
+								<select filter="INVEST">
+									<option value="-">-</option>
+									<option value="STOCK">股票</option>
+									<option value="LOTTERY">樂透彩</option>
+								</select>
 							</div>
-						</div>
-						<div ForTASK="JOB_U">
-							<h1>分析師(大學)</h1>
-						</div>
-						<div ForTASK="JOB_F">
-							<h1>Food Panda 送貨員</h1>
-							<div>條件: 機車</div>
+							<div filter="JOB-H">
+								<input tk="N" value="理財專員"/>
+								<div>月薪: 每<input tk="S:p" type="number" value="1"/>個月，活存增加<input tk="S:+" type="number" value="28000"/></div>
+								<div>獎金: 每<input tk="A:p" type="number" value="12"/>個月，活存增加<input tk="A:+" type="number" value="56000"/></div>
+								<div>使用條件: <input tk="REQ" value=""/></div>
+							</div>
+							<div filter="JOB-U">
+								<input tk="N" value="分析師"/>
+								<div>月薪: 每<input tk="S:p" type="number" value="1"/>個月，活存增加<input tk="S:+" type="number" value="40000"/></div>
+								<div>獎金: 每<input tk="A:p" type="number" value="12"/>個月，活存增加<input tk="A:+" type="number" value="80000"/></div>
+								<div>使用條件: <input tk="REQ" value="大學學歷"/></div>
+							</div>
+							<div filter="JOB-D">
+								<input tk="N" value="送貨員"/>
+								<div>月薪: 每<input tk="S:p" type="number" value="1"/>個月，活存增加<input tk="S:+" type="number" value="30000"/></div>
+								<div>使用條件: <input tk="REQ" value="機車"/></div>
+							</div>
+							<div filter="DEBT-PAYMENT">
+								<input value="生活費"/>
+								<div>費用: 每<input type="number" value="1"/>個月，活存減少<input type="number" value="10000"/></div>
+								<div>房租: 每<input type="number" value="1"/>個月，活存減少<input type="number" value="10000"/></div>
+							</div>
+							<div filter="DEBT-STUDY">
+								<input value="讀大學"/>
+								<div>費用: 每<input type="number" value="1"/>個月，活存減少<input type="number" value="6000"/></div>
+								<div>學雜費: 每<input type="number" value="6"/>個月，活存減少<input type="number" value="10000"/></div>
+								<div><input type="number" value="48"/>個月後，取得<input value="大學文憑"/></div>
+							</div>
+							<div filter="DEBT-MOTORCYCLE">
+								<input value="買機車"/>
+								<div>費用: 持續<input type="number" value="1"/>個月，每<input type="number" value="1"/>個月，活存減少<input type="number" value="60000"/></div>
+								<div><input type="number" value="0"/>個月後，取得<input value="機車"/></div>
+							</div>
+							<div filter="DEBT-LOAN">
+								<input value="貸款"/>
+								<div>費用: 持續<input type="number" value="1"/>個月，每<input type="number" value="1"/>個月，活存增加<input type="number" value="60000"/></div>
+								<div>費用: 持續<input type="number" value="12"/>個月，每<input type="number" value="1"/>個月，活存減少<input type="number" value="6000"/></div>
+							</div>
+							<div filter="INVEST-STOCK">
+								<input value="股票"/>
+								<div>費用: 持續<input type="number" value="1"/>個月，每<input type="number" value="1"/>個月，活存轉移<input type="number" value="100000"/>至股票投資</div>
+								<div>收益: 每<input type="number" value="1"/>個月，股票投資 * <input type="number" value="1.05"/></div>
+							</div>
+							<div filter="INVEST-LOTTERY">
+								<input value="樂透彩"/>
+								<div>費用: 持續<input type="number" value="120"/>個月，每<input type="number" value="1"/>個月，活存減少<input type="number" value="100"/></div>
+								<div>收益: 每<input type="number" value="1"/>個月，活存有<input type="number" value="0.000001">的機率增加<input type="number" value="10000"/></div>
+							</div>
+							<div style="text-align:center;background:lightblue;"><button func="Add">新增</button></div>
 						</div>
 					</td>
 				</tr></tbody>
@@ -71,16 +105,15 @@
 							<input type="month"/>
 							<button>&rarr;</button>
 						</span>
-						<span style="margin:0 8px;">
+						<!--span style="margin:0 8px;">
 							<button>&uarr;</button>
 							<button>&darr;</button>
-						</span>
+						</span-->
 					</td>
 				</tr></tbody>
-				<tbody><tr WidgetTag="Rs">
-					<td Rs="N:text"></td>
-					<td Rs="C:text"></td>
-					<td func="RemoveRule">❌</td>
+				<tbody WidgetTag="Ps"><tr>
+					<td Ps="N:text"></td>
+					<td func="Remove">❌</td>
 				</tr></tbody>
 				<tbody><tr>
 					<td colspan="3" align="center">
@@ -95,7 +128,8 @@
 			<table border="1" cellspacing="6" cellpadding="6" width="98%" align="center">
 				<thead><tr>
 					<th>年月</th>
-					<th>資金</th>
+					<th>活存</th>
+					<th>投資</th>
 					<th>資產</th>
 				</tr></thead>
 				<tbody WidgetTag="item"><tr>

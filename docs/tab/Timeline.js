@@ -1,14 +1,9 @@
 document.currentScript.value=async (root,args)=>{
-	console.log("Table: ",root,args);
+	console.log("Timeline: ",root,args);
 
 	function gw (e,WN="Form"){
-		console.log("XXXXXXXXXXXXXXXXXXXXXXXXXX",e);
 		if("string"===typeof(e)) e=root.querySelector(e);
 		return e._gw ? e._gw() : new Piers.Widget[WN](e);
-	}
-
-	function o2a(o) {
-		return Object.keys(o).reduce((r,v)=>r.push({"K":v,"V":o[v]})&&r,[]);
 	}
 
 	/*let rst = await APP.Head.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
@@ -17,146 +12,118 @@ document.currentScript.value=async (root,args)=>{
 	console.log("Data is ",rst.R,rst.D);
 	*/
 
-	class Book {
-		constructor () {
-			this.xrate={
-				"EUR":34,
-				"USD":32,
-				"JPY":0.25,
-				"TWD":1
-			};
-			((e)=>{
-				while (e.firstChild) e.removeChild(e.firstChild);
-				for (let k in this.xrate)
-					Piers.DOM({ "T":"option", "A":{"value":k}, "C":[k] }).join(e);
-			})(root.querySelector('[IPT="O.T:Value"]'));
-			this.doc={
-				"CN":{"R":"TWD"},
-				"L":[
-					{"N":"One Dollar","O":{"EUR":1}},
-					{"N":"Two Dollar","O":{"USD":2}},
-					{"N":"Three Dollar","O":{"USD":3}},
-					{"N":"Five Dollar","O":{"JPY":5}}
-				],
-				"TT":{}
-			};
+	class _Base_
+	{	// {{{
+		constructor (E) {
+			this.Root = E;
 		}
-		mdAdd (ov,nv) {
-			for(let t in nv){
-				if(t in ov) ov[t] = parseFloat(ov[t]) + parseFloat(nv[t]);
-				else ov[t] = parseFloat(nv[t]);
-			}
+		query (qs) {
+			return this.Root.matches(qs) ? this.Root : this.Root.querySelector(qs);
 		}
-		mdConv (ov, tp) {
-			let r=0;
-			for(let t in ov)
-				r += ov[t]*this.xrate[t]
-			return r;
-		}
-		recalc () {
-			let tto={}, self=this;
-			this.doc.L.forEach(function(row){
-				row.R = self.mdConv(row.O);
-				self.mdAdd(tto,row.O);
-			});
-			this.doc.TT.O=tto;
-			this.doc.TT.R=this.mdConv(tto);
-		}
-		addRecord (r) {
-			if (undefined!==r.I){
-				let idx=r.I;
-				delete r.I;
-				this.doc.L[idx]=r;
-			}else this.doc.L.push(r);
-			this.redraw();
-		}
-		removeRecord (idx) {
-			this.doc.L.splice(idx,1);
-			this.redraw();
-		}
-		redraw () {
-			this.recalc();
-			function oc(o){
-				let no=[],t;
-				for(t in o) no.push({"T":t,"A":o[t]});
-				return no;
-			}
-/*
-			gw('[UIE="List"] [WidgetTag="cn"]').set(this.doc.CN);
-			
-			gw('[UIE="List"] [WidgetTag="item"]',"List").set(this.doc.L.reduce(function(r,v){
-				r.push({"N":v.N, "O":oc(v.O), "R":v.R});
-				return r;
-			},[]));
-			gw('[UIE="List"] [WidgetTag="tt"]').set({"O":oc(this.doc.TT.O),"R":this.doc.TT.R});
-*/
-		}
-	}
-
-	let B=new Book();
-	B.redraw();
-
-	(function(e){
-		if(e.CLICK_BIND)
-			e.removeEventListener("click",e.CLICK_BIND);
-		e.addEventListener("click",e.CLICK_BIND=function(evt){
-			try {
-				let btn=Piers.DOM(evt.target).find('[func]');
-				if (!btn) return;
-				switch(btn.getAttribute("func")){
-				case "Add":
-					(function (doc) {
-						doc.O = [doc.O].reduce((r,v)=>{
-							r[v.T] = parseFloat(v.A);
-							return r;
-						},{});
-						if (null===doc.I) delete doc.I;
-						B.addRecord(JSON.parse(JSON.stringify(doc)));
-					})(gw(e).get());
-					break;
-				case "Clear":
-					(function (ie) {
-						if (!ie) return;
-						ie.removeAttribute("__idx__");
-					})(Piers.DOM(btn).find('[__idx__]'));
-					break;
-				case "Remove":
-					(function (ie) {
-						if (!ie) return;
-						if (window.confirm("Remove item ? ")) {
-							ie.removeAttribute("__idx__");
-							B.removeRecord(ie);
+		bind (cb, fkey="func") {
+			if (!this.Root.ClickHandler)
+				this.Root.ClickHandler = function(evt) {
+					try {
+						let f = Piers.DOM(evt.target).find('['+fkey+']');
+						if (cb(evt, f.getAttribute(fkey))) {
+							evt.preventDefault();
+							evt.stopPropagation();
 						}
-					})(Piers.DOM(btn).find('[__idx__]'));
-					break;
+					} catch(x) { }
 				};
-			} catch(x) {
-			}
-		});
-	})(root.querySelector('[WidgetTag="IPT"]'));
+			this.Root.addEventListener("click",this.Root.ClickHandler);
+		}
+	}	// }}}
 
-	(function(e){
-		if(e.CLICK_BIND)
-			e.removeEventListener("click",e.CLICK_BIND);
-		e.addEventListener("click",e.CLICK_BIND=function(evt){
-			try {
-				let btn=Piers.DOM(evt.target).find('[func]');
-				if (!btn) return;
-				switch(btn.getAttribute("func")){
-				case "Select":
-					(function (e) {
-						// TODO the input UI only support one record with one dollar type now.
-						let doc = gw(e).get();
-						gw('[WidgetTag="IPT"]').set({
-							"N":doc.N,
-							"O":doc.O[0],
-							"I":e.getAttribute("__idx__")
-						});
-					})(btn);
-					break;
-				};
-			} catch(x) {
+	class PlanList extends _Base_
+	{	// {{{
+		constructor (E) {
+			super(E);
+			this.Form = new Piers.Widget.List(this.Root);
+			this.List = [];
+			this.bind((evt,func)=>this.dispatch(evt,func));
+		}
+		add (v) {
+			this.List.push(v);
+			console.log(this.List);
+			this.Form.clear().set(this.List);
+		}
+		dispatch (evt,func) {
+			switch(func){
+			case "Remove":
+				((row)=>{
+					this.List.splice(row.getAttribute("__idx__"),1);
+					this.Form.clear().set(this.List);
+				})(Piers.DOM(evt.target).find("tr"));
+				break;
 			}
-		});
-	})(root.querySelector('[UIE="List"]'));
+			return true;
+		}
+	}	// }}}
+	let pl = new PlanList (root.querySelector('[WidgetTag="Ps"]'));
+
+	class TaskEditor extends _Base_
+	{	// {{{
+		constructor (E) {
+			super(E);
+			this.Tag = E.getAttribute("WidgetTag");
+			this.set("JOB");
+			let lock = false;
+			if(!E.OnSelectChange) E.OnSelectChange=(evt)=>{
+				if(lock) return;
+				lock = true;
+				if("SELECT"===evt.target.tagName){
+					let filter = evt.target.getAttribute(this.Tag),
+						value = evt.target.value;
+					this.set(filter.split("-").concat(value.split("-")).filter((x)=>x).join("-"));
+					evt.preventDefault();
+					evt.stopPropagation();
+				}
+				lock = false;
+			};
+			E.addEventListener("change",E.OnSelectChange);
+			this.bind((evt,func)=>this.dispatch(evt,func));
+		}
+		set (s) {
+			Piers.DOM(this.Root).forEach((e)=>{
+				let filter = e.getAttribute(this.Tag);
+				if (s.startsWith(filter)) {
+					let nv = s.substring(filter.length).replace(/^-/,'').replace(/-.*$/,'');
+					e.value = nv ;
+					if (!e.value) e.value = e.getAttribute("defaultValue");
+					e.setAttribute("SWITCH","ON");
+				} else e.setAttribute("SWITCH","OFF");
+			},'['+this.Tag+']');
+		}
+		get () {
+			return Piers.DOM(this.Root).reduce((r,e)=>{
+				if (e.getAttribute("SWITCH") === "OFF") return;
+				let key = e.getAttribute(this.Tag)+"-"+(e.value||"");
+				return r.length > key.length ? r : key;
+			}, 'select['+this.Tag+']', "");
+		}
+		dispatch (evt, func) {
+			switch(func){
+			case "Add":
+				((root)=>{
+					let rv = Piers.DOM(root).reduce((r,v)=>{
+						let n = v.getAttribute("tk").split(":");
+						n.reduce((r,k,i)=>{
+							if(i<n.length-1){
+								if(!r[k]) r[k] = {};
+								return r[k];
+							}else r[k] = v.value;
+							return r;
+						},r)
+						return r;
+					},"[tk]",{});
+					pl.add(rv);
+					this.set("-");
+				})(this.query('div[filter="'+this.get()+'"]'));
+				break;
+			}
+			return true;
+		}
+	}	// }}}
+	let te = new TaskEditor (root.querySelector('[WidgetTag="filter"]'));
 };

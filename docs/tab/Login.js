@@ -1,11 +1,10 @@
 document.currentScript.value=async (root,args)=>{
-	console.log("Profile is ",APP.Head.UserProfile);
 
 	function __sync__ () {
-		if (APP.Head.UserProfile && APP.Head.UserProfile.A) {
-			root.setAttribute("UserProfile",APP.Head.UserProfile.A);
+		if (document.App.UserProfile && document.App.UserProfile.A) {
+			root.setAttribute("UserProfile",document.App.UserProfile.A);
 			(async function (form) {
-				(new Piers.Widget.Form(form)).set(APP.Head.UserProfile);
+				(new Piers.Widget.Form(form)).set(document.App.UserProfile);
 			})(root.querySelector('[WidgetTag="vn"]'));
 		} else if (root.hasAttribute("UserProfile"))
 			root.removeAttribute("UserProfile");
@@ -23,20 +22,20 @@ document.currentScript.value=async (root,args)=>{
 			case "passwd":
 				(async function (e) {
 					if (e.getAttribute("Fold")==='y') {
-						e.querySelector('[vn="A"]').value=APP.Head.UserProfile.A;
+						e.querySelector('[vn="A"]').value=document.App.UserProfile.A;
 						e.setAttribute("Fold","n");
 					} else {
 						let newpass,res;
 						newpass=e.querySelector('[vn="S"]').value;
 						if (newpass!==e.querySelector('[vn="SV"]').value)
 							return alert("確認密碼錯誤");
-						res = await APP.Head.request("home/auth",{
+						res = await document.App.request("home/auth",{
 							"A":"porshenlai",
 							"S":Piers.Session.SHA_b64("porshenlai:"+newpass)
 						});
 						alert(res.R==="OK" ? "密碼修改成功" : "密碼修改失敗");
 						e.setAttribute("Fold","y");
-						APP.Head.updateUserProfile({});
+						document.App.updateUserProfile({});
 						__sync__();
 					}
 				})(evt.target.parentNode);
@@ -50,13 +49,13 @@ document.currentScript.value=async (root,args)=>{
 					},"[vn]",{}), msg,res;
 
 					form.S = Piers.Session.SHA_b64(form.A+":"+form.S);
-					res = await APP.Head.request("home/auth",{"A":form.A});
+					res = await document.App.request("home/auth",{"A":form.A});
 					if (res.R === "OK") {
 						form.T = res.A.T;
 						form.S = Piers.Session.SHA_b64(form.A+":"+form.T+":"+form.S);
-						res = await APP.Head.request("home/auth",form);
+						res = await document.App.request("home/auth",form);
 						if (res.R === "OK") {
-							APP.Head.updateUserProfile(res.A);
+							document.App.updateUserProfile(res.A);
 							fe.querySelector('[vn="msg"]').textContent
 							msg = "";
 						} else
@@ -69,7 +68,7 @@ document.currentScript.value=async (root,args)=>{
 				break;
 			case "logout":
 				(async function (form) {
-					APP.Head.updateUserProfile({});
+					document.App.updateUserProfile({});
 					__sync__();
 				})(Piers.DOM(evt.target).find("form"));
 				break;

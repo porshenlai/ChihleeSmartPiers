@@ -157,7 +157,7 @@
 
 	document.onload=async ()=>{
 		document.App = new _Application_(await Piers.URL("pref.json").request());
-		document.body.querySelector('[func="'+(Piers.Env.Args.O.SP||"Timeline")+'"]').click();
+		document.body.querySelector('[func="'+(Piers.Env.Args.O.SP||document.App.Preference.StartPage)+'"]').click();
 		document.body.style.opacity=1;
 	};
 	</script>

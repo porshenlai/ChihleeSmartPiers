@@ -1,3 +1,5 @@
+#!./__pyenv__/bin/python3
+
 from sys import path as libPath, stdin, exit, argv
 from os import listdir, makedirs, path as Path
 from re import compile as newRE

@@ -126,4 +126,69 @@ document.currentScript.value=async (root,args)=>{
 		}
 	}	// }}}
 	let te = new TaskEditor (root.querySelector('[WidgetTag="filter"]'));
+
+	class FrameList extends _Base_
+	{	// {{{
+		constructor (E) {
+			super(E);
+			this.Frames = [];
+			this.Form = new Piers.Widget.List(this.Root);
+		}
+		add (frame) {
+			this.Frames.unshift(Object.assign({},frame));
+			this.Form.set(this.Frames);
+		}
+	}	// }}}
+	let fl = new FrameList (root.querySelector('[WidgetTag="Frame"]'));
+
+	class MediaControl extends _Base_
+	{	// {{{
+		constructor (E) {
+			super(E);
+			this.Form = new Piers.Widget.Form(this.Root);
+			this.Doc = {
+				T:((d)=>d.getFullYear()*100+d.getMonth()+1)(new Date()),
+				S:30000,
+				I:0,
+				D:0,
+				P:""
+			};
+			this.Form.set(this.Doc);
+			this.bind((evt,func)=>this.dispatch(evt,func));
+			fl.add(this.Doc);
+			this.State = "Paused";
+			this.Timer = setInterval(()=>{
+				if (this.State==="Paused") return;
+				this.next();
+			}, 1000);
+		}
+
+		next () {
+			function nextMonth (ov) {
+				ov=[Math.floor(ov/100),ov%100];
+				ov[1]+=1;
+				if(ov[1]==13){ ov[0]+=1; ov[1]=1; }
+				return ov[0]*100+ov[1];
+			}
+			this.Doc.T=this.nextMonth(parseInt(this.Doc.T));
+			fl.add(this.Doc);
+		}
+
+
+		dispatch (evt, func) {
+			switch(func){
+			case "Play":
+				this.Root.setAttribute("State",this.State="Playing");
+				break;
+			case "Stop":
+				this.Root.setAttribute("State",this.State="Paused");
+				break;
+			case "Next":
+				this.next();
+				break;
+			}
+			return true;
+		}
+	}	// }}}
+	let mc = new MediaControl (root.querySelector('[WidgetTag="MC"]'));
 };

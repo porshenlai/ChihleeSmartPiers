@@ -7,6 +7,19 @@ document.currentScript.value=async (root,args)=>{
 	console.log("Data is ",rst.R,rst.D);
 	*/
 
+	class YM {
+		constructor (yms) {
+			yms = yms.split("-").map((v)=>parseInt(v));
+			this.ms = (yms[0]-2000)*12+yms[1]-1;
+		}
+		toString () {
+			return (2000+parseInt(this.ms/12)).toString()+"-"+((this.ms%12)+101).toString().substring(1);
+		}
+		diff (b) {
+			return this.ms - b.ms;
+		}
+	}
+
 	class _Base_
 	{	// {{{
 		constructor (E) {
@@ -178,10 +191,10 @@ document.currentScript.value=async (root,args)=>{
 					let c=[0,1,0,0,0]
 					for (let kk in v[k]) switch(kk) {
 						case "+":
-							c[4]=parseInt(v[k][kk]);
+							c[3]=parseInt(v[k][kk]);
 							break;
 						case "-":
-							c[4]=-parseInt(v[k][kk]);
+							c[3]=-parseInt(v[k][kk]);
 							break;
 					}
 					r.S+=c[4];

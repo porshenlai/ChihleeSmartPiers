@@ -5,8 +5,10 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"/>
 </head>
 <body>
-	<div>
+	<div class="ClientRoot">
 		<style>
+			.ClientRoot { font-size:3vmin; }
+			.ClientRoot input, .ClientRoot select, .ClientRoot button { font-size:3vmin; }
 			[WidgetTag="IPT"] { margin: 8px; padding: 6px; border: 2px solid silver; }
 			[WidgetTag="IPT"]>div { display:flex; flex-flow:row nowrap; }
 			[WidgetTag="IPT"] input { border: 0 solid silver; border-width: 0 0 2px 0;}
@@ -14,9 +16,9 @@
 			[SWITCH="OFF"] { display:none }	
 			div[filter] { margin:8px 2px 16px 2px;padding:4px;border:1px solid silver; }
 			[State="Paused"] [func="Stop"], [State="Playing"] [func="Play"] { display:none; }
+			.TextButton { background:white; padding:4px; border:2px solid thin; border-radius:6px; text-align:center; }
+			.TextButton:hover { background:lightblue; }
 		</style>
-		<div>快轉築夢</div>
-
 		<div style="text-align:center;">
 			<table UIE="Config" border="1" style="border:0;margin:1%;width:98%;">
 				<tbody><tr>
@@ -104,16 +106,23 @@
 					<td func="Remove">❌</td>
 				</tr></tbody>
 				<tbody><tr>
-					<td colspan="3" align="center" WidgetTag="MC" State="Paused">
-						<input MC="T:Value" type="month"/>
-						<button func="Next">&gt;</button>
-						<button func="Play">&#9654;</button>
-						<button func="Stop">&#9632;</button>
-						<span style="background:lightblue;color:darkgreen">
-							活存:<input MC="S:Value" type="number" value="30000"/>
-							投資:<input MC="I:Value" type="number" value="0"/>
-							負債:<input MC="D:Value" type="number" value="0"/>
-						</span>
+					<td colspan="3" align="center" WidgetTag="MC" State="Paused" style="background:darkgreen;padding:6px;">
+						<table cellspacing="7"><tbody><tr>
+							<td class="TextButton" width="7%"><div func="Prev">&lt;</div></td>
+							<td style="background:lightgreen;color:darkgreen;padding:6px;border-radius:6px;text-align:center;">
+								<input MC="T:Value" type="month"/>
+							</td>
+							<td class="TextButton" width="7%"><div func="Play">&#9654;</div><span func="Stop">&#9632;</span></td>
+							<td class="TextButton" width="7%"><div func="Next">&gt;</div></td>
+						</tr><tr>
+							<td style="background:lightgreen;color:darkgreen;padding:6px;border-radius:6px;" colspan="4">
+								<div style="display:flex;">
+								活存:<input style="flex:1 1 auto;width:10%;" MC="S:Value" type="number" value="30000"/>
+								投資:<input style="flex:1 1 auto;width:10%;" MC="I:Value" type="number" value="0"/>
+								負債:<input style="flex:1 1 auto;width:10%;" MC="D:Value" type="number" value="0"/>
+								</div>
+							</td>
+						</tr></tbody></table>
 					</td>
 				</tr></tbody>
 			</table>

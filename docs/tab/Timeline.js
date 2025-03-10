@@ -1,11 +1,6 @@
 document.currentScript.value=async (root,args)=>{
 	console.log("Timeline: ",root,args);
 
-	function gw (e,WN="Form"){
-		if("string"===typeof(e)) e=root.querySelector(e);
-		return e._gw ? e._gw() : new Piers.Widget[WN](e);
-	}
-
 	/*let rst = await APP.Head.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
 	console.log("Write Test Result is ",rst);
 	rst = await APP.Head.request("home/file",{"F":"r","N":"test2"});
@@ -118,7 +113,7 @@ document.currentScript.value=async (root,args)=>{
 						return r;
 					},"[tk]",{});
 					pl.add(rv);
-					this.set("-");
+					this.set("JOB");
 				})(this.query('div[filter="'+this.get()+'"]'));
 				break;
 			}
@@ -138,6 +133,11 @@ document.currentScript.value=async (root,args)=>{
 			this.Frames.unshift(Object.assign({},frame));
 			this.Form.set(this.Frames);
 		}
+		remove () {
+			let rv = fl.Frames.shift();
+			this.Form.set(this.Frames);
+			return rv;
+		}
 	}	// }}}
 	let fl = new FrameList (root.querySelector('[WidgetTag="Frame"]'));
 
@@ -147,7 +147,7 @@ document.currentScript.value=async (root,args)=>{
 			super(E);
 			this.Form = new Piers.Widget.Form(this.Root);
 			this.Doc = {
-				T:((d)=>d.getFullYear()*100+d.getMonth()+1)(new Date()),
+				T:((d)=>d.getFullYear()+"-"+(101+d.getMonth()).toString().substring(1))(new Date()),
 				S:30000,
 				I:0,
 				D:0,
@@ -165,15 +165,33 @@ document.currentScript.value=async (root,args)=>{
 
 		next () {
 			function nextMonth (ov) {
+				ov=parseInt(ov.replace(/-/,''))
 				ov=[Math.floor(ov/100),ov%100];
 				ov[1]+=1;
 				if(ov[1]==13){ ov[0]+=1; ov[1]=1; }
-				return ov[0]*100+ov[1];
+				return ov[0]+"-"+(ov[1]<10?"0":"")+ov[1];
 			}
-			this.Doc.T=this.nextMonth(parseInt(this.Doc.T));
+			this.Doc.T=nextMonth(this.Doc.T);
+			pl.List.reduce((r,v)=>{
+				for (let k in v) {
+					if ("object" !== typeof(v[k])) continue;
+					let c=[0,1,0,0,0]
+					for (let kk in v[k]) switch(kk) {
+						case "+":
+							c[4]=parseInt(v[k][kk]);
+							break;
+						case "-":
+							c[4]=-parseInt(v[k][kk]);
+							break;
+					}
+					r.S+=c[4];
+				}
+				return r;
+			},this.Doc);
+			console.log("3",this.Doc);
+			this.Form.set(this.Doc);
 			fl.add(this.Doc);
 		}
-
 
 		dispatch (evt, func) {
 			switch(func){
@@ -182,6 +200,11 @@ document.currentScript.value=async (root,args)=>{
 				break;
 			case "Stop":
 				this.Root.setAttribute("State",this.State="Paused");
+				break;
+			case "Prev":
+				fl.remove();
+				this.Doc = fl.Frames[0];
+				this.Form.set(this.Doc);
 				break;
 			case "Next":
 				this.next();

@@ -1,4 +1,4 @@
-#!./__pyenv__/bin/python3
+#!./__pyenv__/python.exe
 
 from sys import path as libPath, stdin, exit, argv
 from os import listdir, makedirs, path as Path

@@ -39,25 +39,25 @@
 								<select filter="DEBT">
 									<option value="-">-</option>
 									<option value="PAYMENT">生活費</option>
-									<option value="STUDY">讀大學</option>
-									<option value="MOTORCYCLE">買機車</option>
 									<option value="LOAN">貸款</option>
 								</select>
 								<select filter="INVEST">
 									<option value="-">-</option>
 									<option value="STOCK">股票</option>
+									<option value="STUDY">讀大學</option>
+									<option value="MOTORCYCLE">買機車</option>
 									<option value="LOTTERY">樂透彩</option>
 								</select>
 							</div>
 							<div filter="JOB-H">
 								<input tk="N" value="理財專員"/>
-								<div>月薪: 每<input tk="S:p" type="number" value="1"/>個月，活存增加<input tk="S:+" type="number" value="28000"/></div>
+								<div>月薪: 每<input tk="S:m" type="hidden" value="0"/>月，活存增加<input tk="S:+" type="number" value="28000"/></div>
 								<div>獎金: 每年<input tk="A:m" type="number" value="2"/>月，活存增加<input tk="A:+" type="number" value="56000"/></div>
 								<div>使用條件: <input tk="REQ" value=""/></div>
 							</div>
 							<div filter="JOB-U">
 								<input tk="N" value="分析師"/>
-								<div>月薪: 每<input tk="S:p" type="number" value="1"/>個月，活存增加<input tk="S:+" type="number" value="40000"/></div>
+								<div>月薪: 每<input tk="S:m" type="hidden" value="0"/>月，活存增加<input tk="S:+" type="number" value="40000"/></div>
 								<div>獎金: 每年<input tk="A:m" type="number" value="2"/>月，活存增加<input tk="A:+" type="number" value="80000"/></div>
 								<div>使用條件: <input tk="REQ" value="大學學歷"/></div>
 							</div>
@@ -68,35 +68,35 @@
 							</div>
 							<div filter="DEBT-PAYMENT">
 								<input tk="N" value="生活費"/>
-								<div>費用: 每<input tk="F:p" type="number" value="1"/>個月，活存減少<input tk="F:-" type="number" value="10000"/></div>
-								<div>房租: 每<input tk="R:p" type="number" value="1"/>個月，活存減少<input tk="R:-" type="number" value="10000"/></div>
+								<div>費用: 每<input tk="F:m" type="hidden" value="0"/>月，活存減少<input tk="F:-" type="number" value="10000"/></div>
+								<div>房租: 每<input tk="R:m" type="hidden" value="0"/>月，活存減少<input tk="R:-" type="number" value="10000"/></div>
 							</div>
-							<div filter="DEBT-STUDY">
+							<div filter="INVEST-STUDY">
 								<input tk="N" value="讀大學"/>
-								<div>費用: 每<input tk="F:p" type="number" value="1"/>個月，活存減少<input tk="F:-" type="number" value="6000"/></div>
+								<div>費用: 每<input tk="F:m" type="hidden" value="0"/>月，活存減少<input tk="F:-" type="number" value="6000"/></div>
 								<div>學雜費: 每年<input tk="R:m" type="number" value="3"/>月，活存減少<input tk="R:-" type="number" value="10000"/></div>
 								<div>學雜費: 每年<input tk="R:m" type="number" value="9"/>月，活存減少<input tk="R:-" type="number" value="10000"/></div>
-								<div><input tk="PROP:s" type="number" value="48"/>個月後，取得<input tk="PROP:+" value="大學文憑"/></div>
+								<div><input tk="P:a" type="number" value="48"/>個月後，取得<input tk="P:+P" value="大學文憑"/><input tk="P:x" type="hidden" value="x"/></div>
 							</div>
-							<div filter="DEBT-MOTORCYCLE">
+							<div filter="INVEST-MOTORCYCLE">
 								<input tk="N" value="買機車"/>
 								<div>費用: 活存減少<input tk="F:-" type="number" value="60000"/></div>
-								<div>取得 <input tk="PROP:+" value="機車"/></div>
+								<div>取得 <input tk="P:+P" value="機車"/></div>
 							</div>
 							<div filter="DEBT-LOAN">
 								<input tk="N" value="貸款"/>
 								<div>費用: 活存增加<input tk="G:+" type="number" value="60000"/></div>
-								<div>費用: 持續<input tk="F:e" type="number" value="12"/>個月，每<input tk="F:p" type="number" value="1"/>個月，活存減少<input tk="F:-" type="number" value="6000"/></div>
+								<div>費用: 每<input tk="F:m" type="hidden" value="0"/>月，活存減少<input tk="F:-" type="number" value="6000"/>，直至<input tk="F:u" type="number" value="6"/>個月後。</div>
 							</div>
 							<div filter="INVEST-STOCK">
 								<input tk="N" value="股票"/>
 								<div>費用: 活存轉移<input tk="I:+INV" type="number" value="100000"/>至股票投資</div>
-								<div>收益: 每<input tk="E:p" type="number" value="1"/>個月，股票投資 * <input tk="E:*INV"  type="number" value="1.05"/></div>
+								<div>收益: 每<input tk="E:m" type="hidden" value="0"/>月，股票投資 * <input tk="E:*INV"  type="number" value="1.05"/></div>
 							</div>
 							<div filter="INVEST-LOTTERY">
 								<input tk="N" value="樂透彩"/>
-								<div>費用: 持續<input tk="F:e" type="number" value="120"/>個月，每<input tk="F:p" type="number" value="1"/>個月，活存減少<input tk="F:-" type="number" value="100"/></div>
-								<div>收益: 持續<input tk="A:e" type="number" value="120"/>個月，每<input tk="A:p" type="number" value="1"/>個月，活存有<input tk="A:c" type="number" value="0.000001"/>的機率增加<input tk="A:+" type="number" value="10000"/></div>
+								<div>費用: 每<input tk="F:m" type="hidden" value="0"/>月，活存減少<input tk="F:-" type="number" value="1000"/></div>
+								<div>收益: 每<input tk="A:m" type="number" value="0"/>月，活存有<input tk="A:c" type="number" value="0.000001"/>的機率增加<input tk="A:+" type="number" value="10000"/></div>
 							</div>
 							<div style="text-align:center;background:lightblue;"><button func="Add">新增</button></div>
 						</div>

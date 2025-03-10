@@ -18,6 +18,15 @@ document.currentScript.value=async (root,args)=>{
 		diff (b) {
 			return this.ms - b.ms;
 		}
+		add (v) {
+			this.ms+=v;
+			return this;
+		}
+		match (y, m) {
+			if(y && parseInt(this.ms/12) != y) return false;
+			if(m && ((this.ms%12)+1) != m) return false;
+			return true;
+		}
 	}
 
 	class _Base_
@@ -53,7 +62,9 @@ document.currentScript.value=async (root,args)=>{
 		}
 		add (v) {
 			this.List.push(v);
-			console.log(this.List);
+			this.Form.clear().set(this.List);
+		}
+		redraw () {
 			this.Form.clear().set(this.List);
 		}
 		dispatch (evt,func) {
@@ -161,10 +172,7 @@ document.currentScript.value=async (root,args)=>{
 			this.Form = new Piers.Widget.Form(this.Root);
 			this.Doc = {
 				T:((d)=>d.getFullYear()+"-"+(101+d.getMonth()).toString().substring(1))(new Date()),
-				S:30000,
-				I:0,
-				D:0,
-				P:""
+				S:100000, I:0, D:0, P:""
 			};
 			this.Form.set(this.Doc);
 			this.bind((evt,func)=>this.dispatch(evt,func));
@@ -177,31 +185,38 @@ document.currentScript.value=async (root,args)=>{
 		}
 
 		next () {
-			function nextMonth (ov) {
-				ov=parseInt(ov.replace(/-/,''))
-				ov=[Math.floor(ov/100),ov%100];
-				ov[1]+=1;
-				if(ov[1]==13){ ov[0]+=1; ov[1]=1; }
-				return ov[0]+"-"+(ov[1]<10?"0":"")+ov[1];
-			}
-			this.Doc.T=nextMonth(this.Doc.T);
+			let ym=new YM(this.Doc.T);
+			this.Doc.T=ym.add(1).toString();
 			pl.List.reduce((r,v)=>{
 				for (let k in v) {
 					if ("object" !== typeof(v[k])) continue;
-					let c=[0,1,0,0,0]
-					for (let kk in v[k]) switch(kk) {
-						case "+":
-							c[3]=parseInt(v[k][kk]);
-							break;
-						case "-":
-							c[3]=-parseInt(v[k][kk]);
-							break;
+					if ("m" in v[k]) {
+						if (!ym.match(0,parseInt(v[k].m))) continue;
+					} else if ("b" in v[k]) {
+						if (!("a" in v[k])) continue;
+						if (ym.ms-parseInt(v[k].b) != parseInt(v[k].a)) continue;
+					} else {
+						v[k].b = ym.ms - 1;
+						if ("a" in v[k]) continue;
 					}
-					r.S+=c[4];
+					if ("+" in v[k]) {
+						r.S += parseInt(v[k]['+']);
+					} else if ("-" in v[k]) {
+						r.S -= parseInt(v[k]['-']);
+					} else if ("+P" in v[k]) {
+						r.P = r.P.split(",").filter((x)=>x&&v[k]["+P"]!==x);
+						r.P.push(v[k]['+P']);
+						r.P = r.P.join(",");
+					} else if ("-P" in v[k]) {
+						r.P = r.P.split(",").filter((x)=>x&&v[k]["-P"]!==x);
+						r.P = r.P.join(",");
+					}
+					if ("x" in v[k]) delete v.N;
 				}
 				return r;
 			},this.Doc);
-			console.log("3",this.Doc);
+			pl.List=pl.List.filter((v)=>("N" in v));
+			pl.redraw();
 			this.Form.set(this.Doc);
 			fl.add(this.Doc);
 		}
@@ -215,9 +230,11 @@ document.currentScript.value=async (root,args)=>{
 				this.Root.setAttribute("State",this.State="Paused");
 				break;
 			case "Prev":
-				fl.remove();
-				this.Doc = fl.Frames[0];
-				this.Form.set(this.Doc);
+				if(fl.Frames.length>1){
+					fl.remove();
+					this.Doc = fl.Frames[0];
+					this.Form.set(this.Doc);
+				}
 				break;
 			case "Next":
 				this.next();

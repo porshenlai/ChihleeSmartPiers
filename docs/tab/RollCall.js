@@ -24,16 +24,20 @@ document.currentScript.value=async (root,args)=>{
 		(root.querySelector('[WidgetTag="std"]'))._gw().set(list);
 	}
 
+	QKTable={
+		2:"P02",3:"P03",4:"P04",5:"P05",6:"P06",7:"P07",8:"P08",9:"ME",
+		10:"P10", 11:"P11", 12:"P12", 13:"P13", 14:"P14", 15:"P15", 16:"P16", 17:"FE"
+	};
+
 	((w)=>{
-		let e = root.querySelector('[std="'+"P"+(w<10?"0":"")+w+':Value"]');
-		Piers.DOM({
-			"T":"button",
-			"A":{"func":"call"},
-			"C":["呼叫"]
-		}).join(e.parentNode);
-//		console.log(e);
+		let e = root.querySelector('[std="'+QKTable[w]+':Value"]');
+		if(e)
+			Piers.DOM({
+				"T":"button",
+				"A":{"func":"call"},
+				"C":["呼叫"]
+			}).join(e.parentNode);
 	})(Math.floor(Math.floor((new Date()-new Date(2025,1,17))/86400000)/7)+1);
-//	<button func="call">Call</button>
 
 	window.speechSynthesis.getVoices();
 	(function (tb) {

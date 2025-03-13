@@ -181,7 +181,7 @@ document.currentScript.value=async (root,args)=>{
 			this.Timer = setInterval(()=>{
 				if (this.State==="Paused") return;
 				this.next();
-			}, 1000);
+			}, 300);
 		}
 
 		next () {

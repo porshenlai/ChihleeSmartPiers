@@ -2,7 +2,7 @@
 	"Pages":{
 		"Login":{"F":"tab/Login"},
 		"Timeline":{"F":"tab/Timeline","L":"快轉夢想"},
-		"SmartBudget":{"F":"tab/SmartBudget","L":"透明錢包"},
+		"SmartBudget":{"F":"tab/SmartBudget","L":"Smart Budget"},
 		"RollCall":{"F":"tab/RollCall","L":"致理點點名"}
 	},
 	"StartPage":"Timeline"

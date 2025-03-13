@@ -24,6 +24,17 @@ document.currentScript.value=async (root,args)=>{
 		(root.querySelector('[WidgetTag="std"]'))._gw().set(list);
 	}
 
+	((w)=>{
+		let e = root.querySelector('[std="'+"P"+(w<10?"0":"")+w+':Value"]');
+		Piers.DOM({
+			"T":"button",
+			"A":{"func":"call"},
+			"C":["呼叫"]
+		}).join(e.parentNode);
+//		console.log(e);
+	})(Math.floor(Math.floor((new Date()-new Date(2025,1,17))/86400000)/7)+1);
+//	<button func="call">Call</button>
+
 	window.speechSynthesis.getVoices();
 	(function (tb) {
 		(new Piers.Widget.List(tb)).set(list);
@@ -32,11 +43,15 @@ document.currentScript.value=async (root,args)=>{
 			tb.ClickHandler.undefined;
 		}
 		tb.addEventListener("click", function (evt) {
+			let dict=[" 有沒有到了啊 ?"," 有沒有到了呀!"," 到了嗎 ?"," 在哪裡啊 ?"," 聽到請回答."];
 			switch(evt.target.getAttribute("func")){
 			case "call":
 				(function(row){
 					let doc = row._gw().get();
-					speak(doc.I+" "+doc.N+" 到了嗎 ?");
+					speak(
+						Array.from(doc.I.matchAll(/./g),(x)=>x[0]).join(" ")
+						+" "+doc.N+dict[Math.floor(Math.random()*dict.length)]
+					);
 				})(Piers.DOM(evt.target).find("tr"));
 				break;
 			}

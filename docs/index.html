@@ -19,10 +19,9 @@
 				this.Root.ClickHandler = function(evt) {
 					try {
 						let f = Piers.DOM(evt.target).find('['+fkey+']');
-						if (cb(evt, f.getAttribute(fkey))) {
-							evt.preventDefault();
-							evt.stopPropagation();
-						}
+						cb(evt, f.getAttribute(fkey));
+						evt.preventDefault();
+						evt.stopPropagation();
 					} catch(x) { }
 				};
 			this.Root.addEventListener("click",this.Root.ClickHandler);
@@ -103,8 +102,8 @@
 			);
 		}
 		open (tn) {
-			document.App.Bar.markActive(tn);
 			this.Form.set(tn);
+			document.App.Bar.markActive(tn);
 		}
 	}	// }}}
 

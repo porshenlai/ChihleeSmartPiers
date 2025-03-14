@@ -19,10 +19,18 @@ document.currentScript.value=async (root,args)=>{
 		return Object.keys(o).reduce((r,v)=>r.push({"K":v,"V":o[v]})&&r,[]);
 	}
 
-	let rst = await document.App.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
+	/*let rst = await document.App.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
 	console.log("Write Test Result is ",rst);
 	rst = await document.App.request("home/file",{"F":"r","N":"test2"});
 	console.log("Data is ",rst.R,rst.D);
+	*/
+
+	class Money {
+		constructor (xrate={
+		}) {
+			
+		}
+	}
 
 	class Book {
 		constructor () {

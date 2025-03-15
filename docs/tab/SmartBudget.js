@@ -19,6 +19,71 @@ document.currentScript.value=async (root,args)=>{
 		return Object.keys(o).reduce((r,v)=>r.push({"K":v,"V":o[v]})&&r,[]);
 	}
 
+	class YM {
+		constructor (d) {
+			if (!d) d = new Date();
+			if ("string" === typeof(d)) d=parseInt(d);
+			this.Value = ("number" === typeof(d))
+				? [Math.floor(d/100),(d%100)-1]
+				: [d.getFullYear(),d.getMonth()];
+		}
+
+		dist (dt) {
+			if (!(dt instanceof YM)) dt = new YM(dt);
+			return (dt.Value[0] - this.Value[0])*12+dt.Value[1]-this.Value[1];
+		}
+
+		toString () {
+			return this.Value[0]+((v)=>v<10?("0"+v):v)(this.Value[1]+1);
+		}
+	}
+
+	let ref = new YM(new Date(2000,0,1));
+
+	console.log( ref.toString() );
+	console.log( ref.dist(new Date()) );
+	console.log( ref.dist(202502) );
+	console.log( ref.dist(202505) );
+	console.log( ref.dist(202508) );
+	console.log( ref.dist(202511) );
+
+	class CvDB {
+		constructor (url) {
+			this.Ref = new YM(new Date(2000,0,1))
+			if(url) this.DB = this.loadDB(url);
+		}
+		async loadDB (url) {
+			let db = await document.App.request(url);
+			return db;
+		}
+		async convert (from, to, amount, dbn=0) {
+			let db = await this.DB;
+			console.log(db[from],db[to],db);
+			console.log("RESULT is ",amount*db[to][dbn]/db[from][dbn]);
+			return amount*db[to]/db[from];
+		}
+		async test (cn, x) {
+			let db = await this.DB;
+			let regression = await Piers.import(Piers.Env.PierPath+"Regression.js");
+			let eq = regression('polynomial', [
+				[this.Ref.dist("202502"),db.TWD[1]],
+				[this.Ref.dist("202505"),db.TWD[2]],
+				[this.Ref.dist("202508"),db.TWD[3]],
+				[this.Ref.dist("202511"),db.TWD[4]]
+			], 4);
+			return (x*x*x*x)*eq[4] +
+				   (x*x*x)*eq[3] +
+				   (x*x)*eq[2] +
+				   (x)*eq[1] + eq[0] ;
+		}
+	}
+
+	let currency = new CvDB("tab/SmartBudget/Currency.json"),
+		living = new CvDB("tab/SmartBudget/Life.json");
+	// await currency.convert("EUR","TWD",10000);
+	// await living.convert("Taipei, Taiwan", "New York, NY, United States", 300, 4);
+	currency.test();
+
 	/*let rst = await document.App.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
 	console.log("Write Test Result is ",rst);
 	rst = await document.App.request("home/file",{"F":"r","N":"test2"});

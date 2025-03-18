@@ -88,9 +88,18 @@ document.currentScript.value=async (root,args)=>{
 					break;
 				case "download":
 					((d)=>{
-						Piers.DATA(d,"text/tab-separated-values").saveAs(((d)=>d.getFullYear()*10000+100*(1+d.getMonth())+d.getDate()+"-"+d.getHours())(new Date())+".tsv");
-					})( (root.querySelector('[WidgetTag="std"]'))._gw().get()
-						.reduce((a,d)=>a.push(listCN.reduce((r,v,i)=>r.push(d[v])&&r,[]).join("\t"))&&a,[listCN.join("\t")]).join("\n") );
+						d = d.reduce((a,d)=>{
+							let row=listCN.reduce((r,v,i)=>{
+								r.push(d[v]||0);
+								return r;
+							},[]);
+							a.push(row.join("\t"))&&a,[listCN.join("\t")];
+							return a;
+						},[Object.assign([],listCN).join("\t")]).join("\n");
+						Piers.DATA(d,"text/tab-separated-values").saveAs(
+							((d)=>d.getFullYear()*10000+100*(1+d.getMonth())+d.getDate()+"-"+d.getHours())(new Date())+".tsv"
+						);
+					})( root.querySelector('[WidgetTag="std"]')._gw().get() );
 					break;
 				}
 			} catch (x) { console.log(x); }

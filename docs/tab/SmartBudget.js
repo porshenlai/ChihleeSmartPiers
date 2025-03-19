@@ -40,13 +40,6 @@ document.currentScript.value=async (root,args)=>{
 
 	let ref = new YM(new Date(2000,0,1));
 
-	console.log( ref.toString() );
-	console.log( ref.dist(new Date()) );
-	console.log( ref.dist(202502) );
-	console.log( ref.dist(202505) );
-	console.log( ref.dist(202508) );
-	console.log( ref.dist(202511) );
-
 	class CvDB {
 		constructor (url) {
 			this.Ref = new YM(new Date(2000,0,1))
@@ -62,27 +55,24 @@ document.currentScript.value=async (root,args)=>{
 			console.log("RESULT is ",amount*db[to][dbn]/db[from][dbn]);
 			return amount*db[to]/db[from];
 		}
-		async test (cn, x) {
+		async getRate (cn, x) {
 			let db = await this.DB;
 			let regression = await Piers.import(Piers.Env.PierPath+"Regression.js");
 			let eq = regression('polynomial', [
-				[this.Ref.dist("202502"),db.TWD[1]],
-				[this.Ref.dist("202505"),db.TWD[2]],
-				[this.Ref.dist("202508"),db.TWD[3]],
-				[this.Ref.dist("202511"),db.TWD[4]]
+				[this.Ref.dist("202502"),db[cn][1]],
+				[this.Ref.dist("202505"),db[cn][2]],
+				[this.Ref.dist("202508"),db[cn][3]],
+				[this.Ref.dist("202511"),db[cn][4]]
 			], 4);
-			return (x*x*x*x)*eq[4] +
-				   (x*x*x)*eq[3] +
-				   (x*x)*eq[2] +
-				   (x)*eq[1] + eq[0] ;
+			x = this.Ref.dist(x);
+			eq = eq.equation;
+			return (x*x*x*x)*eq[4] + (x*x*x)*eq[3] + (x*x)*eq[2] + (x)*eq[1] + eq[0] ;
 		}
 	}
 
-	let currency = new CvDB("tab/SmartBudget/Currency.json"),
-		living = new CvDB("tab/SmartBudget/Life.json");
+	let currency = new CvDB("tab/SmartBudget/Currency.json"), living = new CvDB("tab/SmartBudget/Life.json");
 	// await currency.convert("EUR","TWD",10000);
 	// await living.convert("Taipei, Taiwan", "New York, NY, United States", 300, 4);
-	currency.test();
 
 	/*let rst = await document.App.request("home/file",{"F":"w","N":"test2","D":{"A":1,"B":2,"C":3}});
 	console.log("Write Test Result is ",rst);
@@ -90,12 +80,10 @@ document.currentScript.value=async (root,args)=>{
 	console.log("Data is ",rst.R,rst.D);
 	*/
 
-	class Money {
-		constructor (xrate={
-		}) {
-			
-		}
-	}
+(async () => {
+		console.log("TWD RATE is ",await currency.getRate("TWD","202507"));
+		console.log("TWD RATE is ",await currency.getRate("TWD","202510"));
+})();
 
 	class Book {
 		constructor () {

@@ -1,3 +1,4 @@
+#!powershell
 $ROOT = Split-Path (Get-Variable MyInvocation).value.MyCommand.Path
 
 cd ${ROOT}/..

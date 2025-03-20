@@ -1,9 +1,9 @@
 {
 	"Pages":{
 		"Login":{"F":"tab/Login"},
-		"FuturePeek":{"F":"tab/FuturePeek","L":"快轉夢想"},
-		"SmartBudget":{"F":"tab/SmartBudget","L":"Smart Budget"},
-		"RollCall":{"F":"tab/RollCall","L":"致理點點名"}
+		"RollCall":{"F":"tab/RollCall","L":"致理點點名"},
+		"DreamSimulation":{"F":"tab/DreamSimulation","L":"夢想模擬器"},
+		"SmartBudget":{"F":"tab/SmartBudget","L":"智能帳簿"}
 	},
-	"StartPage":"SmartBudget"
+	"StartPage":"RollCall"
 }
